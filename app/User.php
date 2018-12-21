@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -29,4 +30,10 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function hasRole($role)
+    {
+        if($role === Auth::user()->role) {
+            return true;
+        }
+    }
 }

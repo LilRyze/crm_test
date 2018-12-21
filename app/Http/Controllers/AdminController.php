@@ -9,23 +9,16 @@ use App;
 
 class AdminController extends Controller
 {
-    public function currentUser()
-    {
-        return Auth::user();
-    }
 
     public function showUsers()
     {
-        if (Auth::check()) {
-            if ($this->currentUser()->role === 'admin') {
-                $users = App\User::all();
-                return view('/layouts/watch_users_admin', ['users' => $users]);
-            } else {
-                return redirect('/');
-            }
-        } else {
-            return redirect('/');
+        try {
+            $users = App\User::all();
+            return view('/layouts/watch_users_admin', ['users' => $users]);
+        }
 
+        catch (\Exception $e) {
+            echo $e;
         }
     }
 
@@ -36,14 +29,21 @@ class AdminController extends Controller
 
     public function editUsers(Request $request)
     {
-        App\User::where('id', $request->id)->
-        update([
-            'name' => $request->name,
-            'role' => $request->role,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-        return 'Created';
+        try {
+            App\User::where('id', $request->id)->
+            update([
+                'name' => $request->name,
+                'role' => $request->role,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+            return 'Created';
+        }
+
+        catch (\Exception $e) {
+            echo $e;
+        }
+
     }
 
     public function getAddUsers()
@@ -53,13 +53,19 @@ class AdminController extends Controller
 
     public function addUsers(Request $request)
     {
-        App\User::create([
-            'name' => $request->name,
-            'role'=> $request->role,
-            'email' => $request->email,
-            'password' => Hash::make($request->password)
-        ]);
-        return 'User created';
+        try {
+            App\User::create([
+                'name' => $request->name,
+                'role' => $request->role,
+                'email' => $request->email,
+                'password' => Hash::make($request->password)
+            ]);
+            return 'User created';
+        }
+
+        catch (\Exception $e) {
+            echo $e;
+        }
     }
 
     public function getDeleteUsers()
@@ -69,7 +75,13 @@ class AdminController extends Controller
 
     public function deleteUsers(Request $request)
     {
-        App\User::where('id', $request->id)->delete();
-        return 'User was deleted';
+        try {
+            App\User::where('id', $request->id)->delete();
+            return 'User was deleted';
+        }
+
+        catch (\Exception $e) {
+            echo $e;
+        }
     }
 }
